@@ -1,13 +1,13 @@
 variable "databasename" {
   description = ""
   type        = string
-  default     = {}
+  default     = "test database name"
 }
 
 variable "name" {
   description = "Crawler Name"
   type        = string
-  default     = {}
+  default     = "test crawler name"
 }
 
 variable "tablename" {}

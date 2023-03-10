@@ -1,4 +1,3 @@
-#KINESIS DATA FIREHOSE DELIVERY STREA
 resource "aws_kinesis_firehose_delivery_stream" "this" {
   name        = var.name
   destination = "extended_s3"

@@ -1,5 +1,4 @@
 resource "aws_glue_catalog_database" "this" {
   name        = var.name
   description = var.description
-  tags        = var.tags
 }
