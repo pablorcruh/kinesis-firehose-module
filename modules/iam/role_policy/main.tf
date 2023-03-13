@@ -1,16 +1,19 @@
-resource "aws_iam_role_policy" "this" {
-  name        = var.name
-  path        = local.path
-  description = var.description
-  policy      = data.aws_iam_role_policy_document.role_policy_document.json
-  tags        = var.tags
-}
-
-data "aws_iam_role_policy_document" "role_policy_document" {
+data "aws_iam_policy_document" "trusted_entities" {
   statement {
-    sid      = var.sid
-    effect   = "Allow"
-    actions  = local.allowed_services
-    resource = var.resources
+    effect  = "Allow"
+    actions = var.actions
+    sid     = var.sid
+
+    principals {
+      type        = var.type
+      identifiers = var.trusted_entities_services
+    }
   }
 }
+
+resource "aws_iam_role_policy" "this" {
+  name        = var.name
+  role        = var.role_name
+  policy      = data.aws_iam_policy_document.trusted_entities.json
+}
+

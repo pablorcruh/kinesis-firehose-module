@@ -1,6 +1,10 @@
+resource "aws_glue_catalog_database" "this" {
+  name        = var.name
+}
+
 resource "aws_glue_catalog_table" "this" {
   name          = var.catalog_tablename
-  database_name = var.databasename
+  database_name = aws_glue_catalog_database.this.name
 
   parameters = {
     "classification" = "parquet"

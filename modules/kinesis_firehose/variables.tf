@@ -1,7 +1,5 @@
 variable "name" {}
 
-variable "firehose_role_arn" {}
-
 variable "buffer_size" {
     type = number
     default = 128
@@ -38,3 +36,7 @@ variable "catalogtable_name" {
     default = "test"
 }
 
+variable "deliveryStream_name" {
+    type = string
+    default = "test"
+}

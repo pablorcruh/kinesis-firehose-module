@@ -3,7 +3,7 @@ resource "aws_kinesis_firehose_delivery_stream" "this" {
   destination = "extended_s3"
 
   extended_s3_configuration {
-    role_arn        = var.firehose_role_arn
+    role_arn        = aws_iam_role.this.arn
     buffer_size     = var.buffer_size
     buffer_interval = var.buffer_interval
     bucket_arn      = var.bucket_arn
@@ -56,8 +56,41 @@ resource "aws_kinesis_firehose_delivery_stream" "this" {
       schema_configuration {
         database_name = var.database_name
         table_name    = var.catalogtable_name
-        role_arn      = var.firehose_role_arn
+        role_arn      = aws_iam_role.this.arn
       }
     }
+  }
+}
+
+resource "aws_iam_role" "this" {
+  name = var.deliveryStream_name
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "firehose.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "this" {
+  name   = "kinesis_firehose_access_glue_policy"
+  role   = aws_iam_role.this.name
+  policy = data.aws_iam_policy_document.kinesis_firehose_access_glue_assume_policy.json
+}
+
+data "aws_iam_policy_document" "kinesis_firehose_access_glue_assume_policy" {
+  statement {
+    effect    = "Allow"
+    actions   = ["glue:GetTableVersions"]
+    resources = ["*"]
   }
 }
